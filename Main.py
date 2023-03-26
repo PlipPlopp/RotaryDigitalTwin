@@ -45,7 +45,7 @@ def send_to_udp_server(msg_to_send):
     """
     Sends a message to the UDP server.
     """
-    UDP_IP = "127.0.0.1"
+    UDP_IP = "192.168.50.3"
     UDP_PORT = 5005
     MESSAGE = json.dumps(msg_to_send)
 
