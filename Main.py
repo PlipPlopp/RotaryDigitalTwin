@@ -27,16 +27,16 @@ def watch_for_new_csv_files(directory):
             file_path = os.path.join(directory, f'TEST_{file_number}.csv')
 
             # Read the CSV file using pandas
-            data = pd.read_csv(file_path, names=['VibX', 'VibY', 'Time'])
+            data = pd.read_csv(file_path, names=['VibX', 'VibY', 'Time']) #Data stream
             print(f'Processed {file_path}:')
-            c = data['VibX'].tolist()
-            p = data['VibY'].tolist()
-            f1 = data['Time'].tolist()
+            c = data['VibX'].tolist()  #Context States used to represent a system’s current parameters
+            p = data['VibY'].tolist()  #Modeling parameters
+            f1 = data['Time'].tolist() #Transformed set of features
 
             # Data Pre-proecssor block below
-            m = model_selection(c)
-            f = signal_processing(m, data)
-            p, f1 = context_filtering(c, f, p)
+            m = model_selection(c) # model identifier
+            f = signal_processing(m, data)  #Features
+            p, f1 = context_filtering(c, f, p) 
 
             # Model Bank Below
             state, probability = model(m, p, f1)
