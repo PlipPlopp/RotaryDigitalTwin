@@ -27,16 +27,18 @@ def watch_for_new_csv_files(directory):
             file_path = os.path.join(directory, f'TEST_{file_number}.csv')
 
             # Read the CSV file using pandas
-            data = pd.read_csv(file_path, names=['VibX', 'VibY', 'Time']) #Data stream
+            data = pd.read_csv(file_path, names=[
+                               'VibX', 'VibY', 'Time'])  # Data stream
             print(f'Processed {file_path}:')
-            c = data['VibX'].tolist()  #Context States used to represent a system’s current parameters
-            p = data['VibY'].tolist()  #Modeling parameters
-            f1 = data['Time'].tolist() #Transformed set of features
+            # Context States used to represent a system’s current parameters
+            c = data['VibX'].tolist()
+            p = data['VibY'].tolist()  # Modeling parameters
+            f1 = data['Time'].tolist()  # Transformed set of features
 
             # Data Pre-proecssor block below
-            m = model_selection(c) # model identifier
-            f = signal_processing(m, data)  #Features
-            p, f1 = context_filtering(c, f, p) 
+            m = model_selection(c)  # model identifier
+            f = signal_processing(m, data)  # Features
+            p, f1 = context_filtering(c, f, p)
 
             # Model Bank Below
             state, probability = model(m, p, f1)
@@ -58,11 +60,11 @@ def send_to_udp_server(msg_to_send):
     """
     UDP_IP = "192.168.50.3"
     UDP_PORT = 5005
-    MESSAGE = json.dumps(msg_to_send)
+    MESSAGE = json.dumps(msg_to_send).encode('utf-8')
 
     print("UDP target IP: %s" % UDP_IP)
     print("UDP target port: %s" % UDP_PORT)
-    print("message: %s" % MESSAGE)
+    print("message: %s" % MESSAGE.decode('utf-8'))
 
     sock = socket.socket(socket.AF_INET,  # Internet
                          socket.SOCK_DGRAM)  # UDP
@@ -70,8 +72,8 @@ def send_to_udp_server(msg_to_send):
 
 
 def signal_processing(m, data):
-    # Extract the values of the specified column (m) from the dict_items
-    column_values = [float(item[m]) for item in data]
+    # Extract the values of the specified column (m) from the data DataFrame
+    column_values = data.iloc[:, m].values.tolist()
 
     # Calculate the square of each value in the column
     squared_values = [value**2 for value in column_values]
