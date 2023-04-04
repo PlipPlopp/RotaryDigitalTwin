@@ -6,7 +6,7 @@ import json
 import math
 import pandas as pd
 
-
+#Rename this function DigitalTwin
 def watch_for_new_csv_files(directory):
     """
     Watches for new CSV files in the specified directory and loads the contents
@@ -22,9 +22,10 @@ def watch_for_new_csv_files(directory):
         highest_file_number = max(file_numbers) if file_numbers else -1
 
         # Process the new file(s) with a higher number than the last processed file
-        for file_number in range(last_processed_file_number + 1, highest_file_number + 1):
+        if last_processed_file_number != highest_file_number:
+    
             # Change TEST_ to the prefix of the CSV files you want to process
-            file_path = os.path.join(directory, f'TEST_{file_number}.csv')
+            file_path = os.path.join(directory, f'TEST_{highest_file_number}.csv')
 
             # Read the CSV file using pandas
             data = pd.read_csv(file_path, names=[
